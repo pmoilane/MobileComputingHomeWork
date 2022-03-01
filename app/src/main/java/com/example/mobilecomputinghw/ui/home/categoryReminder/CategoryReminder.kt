@@ -68,7 +68,7 @@ private fun ReminderListItem(
     modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(modifier = modifier.clickable { onClick() }) {
-        val (divider, reminderTitle, reminderCategory, icon, date) = createRefs()
+        val (divider, reminderTitle, icon) = createRefs()
         Divider(
             Modifier.constrainAs(divider) {
                 top.linkTo(parent.top)
