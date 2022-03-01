@@ -34,7 +34,7 @@ fun HomeContent(
         modifier = Modifier.padding(bottom = 24.dp),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate("reminder") },
                 contentColor = Color.Black,
                 modifier = Modifier.padding(all = 35.dp)
             ) {

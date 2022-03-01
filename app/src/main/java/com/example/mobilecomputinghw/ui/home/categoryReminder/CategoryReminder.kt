@@ -14,11 +14,12 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -78,7 +79,7 @@ private fun ReminderListItem(
 
         // title
         Text(
-            text = reminder.reminderTitle,
+            text = reminder.message,
             maxLines = 1,
             style = MaterialTheme.typography.subtitle1,
             modifier = Modifier.constrainAs(reminderTitle) {
@@ -87,54 +88,10 @@ private fun ReminderListItem(
                     end = icon.start,
                     startMargin = 24.dp,
                     endMargin = 16.dp,
-                    bias = 0f // float this towards the start. this was is the fix we needed
+                    bias = 0f
                 )
                 top.linkTo(parent.top, margin = 10.dp)
                 width = Dimension.preferredWrapContent
-            }
-        )
-
-        // category
-        Text(
-            text = reminder.reminderCategory,
-            maxLines = 1,
-            style = MaterialTheme.typography.subtitle2,
-            modifier = Modifier.constrainAs(reminderCategory) {
-                linkTo(
-                    start = parent.start,
-                    end = icon.start,
-                    startMargin = 24.dp,
-                    endMargin = 8.dp,
-                    bias = 0f // float this towards the start. this was is the fix we needed
-                )
-                top.linkTo(reminderTitle.bottom, margin = 6.dp)
-                bottom.linkTo(parent.bottom, 10.dp)
-                width = Dimension.preferredWrapContent
-            }
-        )
-
-        // date
-        Text(
-            text = when {
-                reminder.reminderDate != null -> {
-                    reminder.reminderDate.formatToString()
-                }
-                else -> Date().formatToString()
-            },
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.caption,
-            modifier = Modifier.constrainAs(date) {
-                linkTo(
-                    start = reminderCategory.end,
-                    end = icon.start,
-                    startMargin = 8.dp,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
-                centerVerticallyTo(reminderCategory)
-                top.linkTo(reminderTitle.bottom, 6.dp)
-                bottom.linkTo(parent.bottom, 10.dp)
             }
         )
 
@@ -151,7 +108,7 @@ private fun ReminderListItem(
                 }
         ) {
             Icon(
-                imageVector = Icons.Filled.Notifications,
+                imageVector = StringToImageVector(reminder.reminderIcon),
                 contentDescription = null
             )
         }
@@ -160,4 +117,19 @@ private fun ReminderListItem(
 
 private fun Date.formatToString(): String {
     return SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(this)
+}
+
+private fun StringToImageVector(IconString: String): ImageVector {
+    if (IconString == "notifications") {
+        return Icons.Default.Notifications
+    }
+    else if (IconString == "call") {
+        return Icons.Default.Call
+    }
+    else if (IconString == "fastfood"){
+        return Icons.Default.Fastfood
+    }
+    else {
+        return Icons.Default.Notifications
+    }
 }
