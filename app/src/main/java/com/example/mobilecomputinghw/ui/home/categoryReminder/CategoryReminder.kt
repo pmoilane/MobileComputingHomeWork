@@ -68,7 +68,7 @@ private fun ReminderListItem(
     modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(modifier = modifier.clickable { onClick() }) {
-        val (divider, reminderTitle, reminderCategory, icon, date) = createRefs()
+        val (divider, reminderTitle, reminderTime, iconEdit, iconRemove, icon) = createRefs()
         Divider(
             Modifier.constrainAs(divider) {
                 top.linkTo(parent.top)
@@ -94,8 +94,58 @@ private fun ReminderListItem(
                 width = Dimension.preferredWrapContent
             }
         )
+        // reminderTime
+        Text(
+            text = String.format("%02d",reminder.reminderTime),
+            maxLines = 1,
+            style = MaterialTheme.typography.subtitle2,
+            modifier = Modifier.constrainAs(reminderTime) {
+                linkTo(
+                    start = parent.start,
+                    end = icon.start,
+                    startMargin = 24.dp,
+                    endMargin = 8.dp,
+                    bias = 0f
+                )
+                top.linkTo(reminderTitle.bottom, margin = 6.dp)
+                bottom.linkTo(parent.bottom, 10.dp)
+                width = Dimension.preferredWrapContent
+            }
+        )
 
         // icon
+        IconButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .size(50.dp)
+                .padding(6.dp)
+                .constrainAs(iconEdit) {
+                    top.linkTo(parent.top, 10.dp)
+                    bottom.linkTo(parent.bottom, 10.dp)
+                    end.linkTo(iconRemove.start)
+                }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = null
+            )
+        }
+        IconButton(
+                onClick = { /*TODO*/ },
+        modifier = Modifier
+            .size(50.dp)
+            .padding(6.dp)
+            .constrainAs(iconRemove) {
+                top.linkTo(parent.top, 10.dp)
+                bottom.linkTo(parent.bottom, 10.dp)
+                end.linkTo(icon.start)
+            }
+        ) {
+        Icon(
+            imageVector = Icons.Default.Remove,
+            contentDescription = null
+        )
+        }
         IconButton(
             onClick = { /*TODO*/ },
             modifier = Modifier

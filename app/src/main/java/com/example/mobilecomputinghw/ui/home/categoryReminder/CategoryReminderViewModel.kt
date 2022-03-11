@@ -22,7 +22,7 @@ class CategoryReminderViewModel(
     init {
 
         viewModelScope.launch {
-            reminderRepository.reminders().collect { list ->
+            reminderRepository.pastReminders(currentTime = System.currentTimeMillis()).collect { list ->
                 _state.value = CategoryReminderViewState(
                     reminders = list
                 )

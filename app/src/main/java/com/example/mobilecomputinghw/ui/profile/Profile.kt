@@ -16,15 +16,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mobilecomputinghw.Graph
 import com.example.mobilecomputinghw.data.entity.SPreference
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
 fun Profile(
     navController: NavController,
-    context: Context
+    //context: Context
 ) {
-    val sharedPreference = SPreference(context)
+    val sharedPreference = SPreference(Graph.appContext)
     val currentAccount = sharedPreference.sharedPreference.getString("currentAccount", "error")
     val currentUsernameString = currentAccount.toString()
     Surface {
@@ -80,8 +81,7 @@ fun Profile(
                         changeUsername(
                             newUsername = newUsername.value,
                             password = password.value,
-                            navController = navController,
-                            context = context
+                            navController = navController
                         )
                     },
                     enabled = true,
@@ -101,10 +101,10 @@ fun Profile(
 fun changeUsername(
     newUsername: String,
     password: String,
-    navController: NavController,
-    context: Context
+    navController: NavController
+    //context: Context
 ) {
-    val sharedPreference = SPreference(context)
+    val sharedPreference = SPreference(Graph.appContext)
     val currentAccount = sharedPreference.sharedPreference.getString("currentAccount", "error")
     val comparison = sharedPreference.sharedPreference.contains(currentAccount + password)
     if (comparison == true) {

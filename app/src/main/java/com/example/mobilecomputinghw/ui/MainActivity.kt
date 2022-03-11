@@ -14,12 +14,13 @@ import com.example.mobilecomputinghw.ui.theme.MobileComputingHWTheme
 import android.content.Context
 
 class MainActivity : ComponentActivity() {
+    //var activityContext:Context = this@MainActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MobileComputingHWTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    MobileComputingHWApp(context = this)
+                    MobileComputingHWApp(context = this@MainActivity)
                 }
             }
         }
