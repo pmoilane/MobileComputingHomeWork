@@ -88,10 +88,9 @@ fun Reminder(
                     onCheckedChange = { notificationSwitch.value = it }
                     )
                 }
-                Spacer(modifier = Modifier.width(60.dp))
+                Spacer(modifier = Modifier.height(40.dp))
                 Button(
                     onClick = {
-                        //val testi = reminderTimeLong.value - currentTimeMillis();
                         coroutineScope.launch {
                             viewModel.saveReminder(
                                 com.example.mobilecomputinghw.data.entity.Reminder(
@@ -110,7 +109,9 @@ fun Reminder(
                         onBackPress()
                         if (notificationSwitch.value) {
                             createNotificationChannel(context = Graph.appContext)
-                            setOneTimeNotification(reminderTimeLong = reminderTimeLong.value)
+                            setOneTimeNotification(reminderTimeLong = reminderTimeLong.value,
+                            notificationMessage = message.value,
+                            notificationTime = reminderTime.value)
                         }
                     },
                     enabled = true,
@@ -272,9 +273,10 @@ private fun IconDropdown(
 }
 
 private fun setOneTimeNotification(
-    reminderTimeLong: Long
+    reminderTimeLong: Long,
+    notificationMessage: String,
+    notificationTime: String
 ) {
-    //val delay: Long = reminderTimeLong - currentTimeMillis()
     val workManager = WorkManager.getInstance(Graph.appContext)
     val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -291,37 +293,12 @@ private fun setOneTimeNotification(
     workManager.getWorkInfoByIdLiveData(notificationWorker.id)
         .observeForever { workInfo ->
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                createSuccessNotification()
-            } else {
-                //createErrorNotification()
+                createSuccessNotification(notificationMessage = notificationMessage,
+                notificationTime = notificationTime)
             }
         }
 }
-/*
-private fun setOneTimeNotification() {
-    val workManager = WorkManager.getInstance(Graph.appContext)
-    val constraints = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.CONNECTED)
-        .build()
 
-    val notificationWorker = OneTimeWorkRequestBuilder<NotificationWorker>()
-        .setInitialDelay(10, TimeUnit.SECONDS)
-        .setConstraints(constraints)
-        .build()
-
-    workManager.enqueue(notificationWorker)
-
-    //Monitoring for state of work
-    workManager.getWorkInfoByIdLiveData(notificationWorker.id)
-        .observeForever { workInfo ->
-            if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                createSuccessNotification()
-            } else {
-                createErrorNotification()
-            }
-        }
-}
-*/
 private fun createNotificationChannel(context: Context) {
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
@@ -339,26 +316,15 @@ private fun createNotificationChannel(context: Context) {
     }
 }
 
-private fun createSuccessNotification() {
+private fun createSuccessNotification(
+    notificationMessage: String,
+    notificationTime: String
+) {
     val notificationId = 1
     val builder = NotificationCompat.Builder(Graph.appContext, "CHANNEL_ID")
         .setSmallIcon(R.drawable.ic_launcher_background)
-        .setContentTitle("Success! Download complete")
-        .setContentText("Your countdown completed successfully")
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-    with(NotificationManagerCompat.from(Graph.appContext)) {
-        //notificationId is unique for each notification that you define
-        notify(notificationId, builder.build())
-    }
-}
-
-private fun createErrorNotification() {
-    val notificationId = 1
-    val builder = NotificationCompat.Builder(Graph.appContext, "CHANNEL_ID")
-        .setSmallIcon(R.drawable.ic_launcher_background)
-        .setContentTitle("Error! Download incomplete")
-        .setContentText("Your countdown encountered an error and stopped abruptly")
+        .setContentTitle("Reminder $notificationTime")
+        .setContentText("$notificationMessage")
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
     with(NotificationManagerCompat.from(Graph.appContext)) {

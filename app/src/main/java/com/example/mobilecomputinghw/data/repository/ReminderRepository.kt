@@ -12,4 +12,9 @@ class ReminderRepository(
     = reminderDao.pastReminders(currentTime = currentTime)
 
     suspend fun addReminder(reminder: Reminder) = reminderDao.insert(reminder)
+
+    suspend fun updateReminder(reminder: Reminder) = reminderDao.update(reminder)
+
+    suspend fun deleteReminder(reminder: Reminder) = reminderDao.delete(reminder)
+
 }
