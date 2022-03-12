@@ -4,9 +4,6 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.mobilecomputinghw.ui.MobileComputingHWAppState
-import com.example.mobilecomputinghw.ui.rememberMobileComputingHWAppState
 import com.example.mobilecomputinghw.ui.login.Login
 import com.example.mobilecomputinghw.ui.home.Home
 import com.example.mobilecomputinghw.ui.profile.Profile
@@ -25,7 +22,6 @@ fun MobileComputingHWApp(
         composable(route = "login") {
             Login(
                 navController = appState.navController
-                //context = context
             )
         }
         composable(route = "home") {
@@ -36,13 +32,11 @@ fun MobileComputingHWApp(
         composable(route = "profile") {
             Profile(
                 navController = appState.navController
-                //context = context
             )
         }
         composable(route = "register") {
             Register(
                 navController = appState.navController,
-                //context = context,
                 onBackPress = appState::navigateBack
             )
         }

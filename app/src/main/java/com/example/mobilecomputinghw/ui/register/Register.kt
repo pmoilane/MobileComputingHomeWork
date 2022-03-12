@@ -1,6 +1,5 @@
 package com.example.mobilecomputinghw.ui.register
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -22,7 +21,6 @@ import com.google.accompanist.insets.systemBarsPadding
 @Composable
 fun Register(
     navController: NavController,
-    //context: Context,
     onBackPress: () -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
