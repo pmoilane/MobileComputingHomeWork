@@ -15,6 +15,9 @@ abstract class ReminderDao {
     @Query("""SELECT * From reminders """)
     abstract fun reminders(): Flow<List<Reminder>>
 
+    @Query("""SELECT * From reminders WHERE reminder_time < :currentTime """)
+    abstract fun pastReminders(currentTime: Long): Flow<List<Reminder>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(entity: Reminder): Long
 

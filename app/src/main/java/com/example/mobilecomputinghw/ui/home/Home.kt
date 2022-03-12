@@ -5,13 +5,16 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mobilecomputinghw.R
-import com.example.mobilecomputinghw.ui.home.categoryReminder.CategoryReminder
+import com.example.mobilecomputinghw.ui.home.ReminderList.CategoryReminder
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
@@ -30,6 +33,7 @@ fun Home(
 fun HomeContent(
     navController: NavController,
 ) {
+    val remindersSwitch = remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.padding(bottom = 24.dp),
         floatingActionButton = {
@@ -55,10 +59,12 @@ fun HomeContent(
             HomeAppBar(
                 backgroundColor = appBarColor,
                 navController = navController,
+                remindersSwitch = remindersSwitch
             )
 
             CategoryReminder(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                remindersSwitch = remindersSwitch
             )
         }
     }
@@ -68,7 +74,9 @@ fun HomeContent(
 private fun HomeAppBar(
     backgroundColor: Color,
     navController: NavController,
+    remindersSwitch: MutableState<Boolean>
 ) {
+    //val remindersSwitch = remember { mutableStateOf(false) }
     TopAppBar(
         title = {
             Text(
@@ -81,6 +89,9 @@ private fun HomeAppBar(
         },
         backgroundColor = backgroundColor,
         actions = {
+            Switch(checked = remindersSwitch.value,
+                onCheckedChange = { remindersSwitch.value = it }
+            )
             IconButton(onClick = { navController.navigate(route = "profile") }) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
@@ -89,7 +100,7 @@ private fun HomeAppBar(
             }
             Button(
                 onClick = { navController.navigate(route = "login") },
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(80.dp)
             ) {
                 Text("Log Out")
             }

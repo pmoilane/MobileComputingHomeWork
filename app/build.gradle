@@ -12,7 +12,7 @@ android {
         minSdk 23
         targetSdk 31
         versionCode 1
-        versionName "1.1"
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -84,4 +84,8 @@ dependencies {
 
     // Icons
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    // Work Manager
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+
 }

@@ -24,8 +24,8 @@ fun MobileComputingHWApp(
     ) {
         composable(route = "login") {
             Login(
-                navController = appState.navController,
-                context = context
+                navController = appState.navController
+                //context = context
             )
         }
         composable(route = "home") {
@@ -35,20 +35,21 @@ fun MobileComputingHWApp(
         }
         composable(route = "profile") {
             Profile(
-                navController = appState.navController,
-                context = context
+                navController = appState.navController
+                //context = context
             )
         }
         composable(route = "register") {
             Register(
                 navController = appState.navController,
-                context = context,
+                //context = context,
                 onBackPress = appState::navigateBack
             )
         }
         composable(route = "reminder") {
             Reminder(
-                onBackPress = appState::navigateBack
+                onBackPress = appState::navigateBack,
+                context = context
             )
         }
     }

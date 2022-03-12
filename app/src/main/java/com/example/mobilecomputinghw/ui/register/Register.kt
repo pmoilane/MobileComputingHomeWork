@@ -15,13 +15,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mobilecomputinghw.Graph
 import com.example.mobilecomputinghw.data.entity.SPreference
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
 fun Register(
     navController: NavController,
-    context: Context,
+    //context: Context,
     onBackPress: () -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -78,8 +79,7 @@ fun Register(
                         SignUp(
                             try_username = username.value,
                             try_password = password.value,
-                            navController = navController,
-                            context = context
+                            navController = navController
                         )
                     },
                     enabled = true,
@@ -98,10 +98,9 @@ fun Register(
 fun SignUp(
     try_username: String,
     try_password: String,
-    navController: NavController,
-    context: Context
+    navController: NavController
 ) {
-    val sharedPreference = SPreference(context)
+    val sharedPreference = SPreference(Graph.appContext)
     sharedPreference.editor.putString(try_username + try_password, try_username)
     sharedPreference.editor.commit()
     return navController.navigate("login")

@@ -16,14 +16,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mobilecomputinghw.Graph
 import com.example.mobilecomputinghw.R
 import com.example.mobilecomputinghw.data.entity.SPreference
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
 fun Login(
-    navController: NavController,
-    context: Context
+    navController: NavController
+    //context: Context
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         val username = rememberSaveable { mutableStateOf("") }
@@ -95,8 +96,8 @@ fun Login(
                     LoginCheck(
                         try_username = username.value,
                         try_password = password.value,
-                        navController = navController,
-                        context = context
+                        navController = navController
+                        //context = context
                     )
                 },
                 enabled = true,
@@ -115,10 +116,10 @@ fun Login(
 fun LoginCheck(
     try_username: String,
     try_password: String,
-    navController: NavController,
-    context: Context
+    navController: NavController
+    //context: Context
 ) {
-    val sharedPreference = SPreference(context)
+    val sharedPreference = SPreference(Graph.appContext)
     val comparison = sharedPreference.sharedPreference.contains(try_username + try_password)
     if (comparison == true) {
         sharedPreference.editor.putString("currentAccount", try_username)
