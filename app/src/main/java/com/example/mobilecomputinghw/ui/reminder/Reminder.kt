@@ -16,17 +16,12 @@ import androidx.compose.ui.unit.dp
 import androidx.work.*
 import android.content.Context
 import android.os.Build
-import android.widget.TimePicker
-import android.widget.ToggleButton
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobilecomputinghw.Graph
 import com.example.mobilecomputinghw.R
-import com.example.mobilecomputinghw.ui.MainActivity
-import com.example.mobilecomputinghw.ui.MobileComputingHWApp
 import com.example.mobilecomputinghw.util.NotificationWorker
 import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.launch
@@ -47,7 +42,7 @@ fun Reminder(
     val reminderTime = rememberSaveable { mutableStateOf(value = "no time")}
     val reminderTimeLong = rememberSaveable { mutableStateOf(0L)}
     val notificationSwitch = remember { mutableStateOf(true)}
-    //var currentTime = rememberSaveable { mutableStateOf(value = 0)}
+
     Surface {
         Column(
             modifier = Modifier
@@ -138,9 +133,7 @@ fun pickTime(
     val calendar = Calendar.getInstance()
     val hour = calendar[Calendar.HOUR_OF_DAY]
     val minute = calendar[Calendar.MINUTE]
-    //val delayy =  calendar.timeInMillis.minus(currentTimeMillis())
 
-    //val time = remember { mutableStateOf("") }
     val timePicker = TimePickerDialog(
         context,
         { _, hour: Int, minute: Int ->
@@ -152,8 +145,6 @@ fun pickTime(
             timeLong.value = calendar.timeInMillis
         }, hour, minute, true
     )
-    //"$hour:$minute"
-    //String.format("%02d:%02d", hour, minute)
 
     Row(
     ) {
@@ -169,30 +160,6 @@ fun pickTime(
 
 }
 
-/*
-@Composable
-fun pickTime() {
-    AndroidView({ TimePickerDialog(it) },
-        Modifier.wrapContentSize(),
-        update = { view ->
-            view.setOnTimeChangedListener { _, hour, min ->
-                // do something with the time
-            }
-        }
-    )
-
-    Row(
-
-    ) {
-        Text(text = "Time: ${time.value}")
-        Button(onClick = {
-            timePicker.show()
-        }) {
-            Text(text = "Pick Time")
-        }
-    }
-
-}*/
 
 @Composable
 private fun IconDropdown(
