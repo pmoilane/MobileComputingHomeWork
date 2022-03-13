@@ -76,7 +76,6 @@ private fun HomeAppBar(
     navController: NavController,
     remindersSwitch: MutableState<Boolean>
 ) {
-    //val remindersSwitch = remember { mutableStateOf(false) }
     TopAppBar(
         title = {
             Text(

@@ -9,7 +9,6 @@ import java.util.*
     tableName = "reminders",
     indices = [
         Index("id", unique = true),
-        //Index("creator_id")
     ]
 )
 

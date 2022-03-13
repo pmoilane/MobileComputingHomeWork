@@ -27,7 +27,7 @@ fun CategoryReminder(
     val viewModel: CategoryReminderViewModel = viewModel()
     val viewState by viewModel.state.collectAsState()
     val viewState2 by viewModel.state2.collectAsState()
-    if (remindersSwitch.value == true ){
+    if (remindersSwitch.value){
     Column(modifier = modifier) {
         ReminderList(
             list = viewState.reminders

@@ -201,7 +201,7 @@ fun pickTime(
 
     Row(
     ) {
-        Text(text = "Time: ${time.value}")//.padStart(2, '0'))
+        Text(text = "Time: ${time.value}")
         Spacer(modifier = Modifier.width(10.dp))
         Button(onClick = {
             timePicker.show()
