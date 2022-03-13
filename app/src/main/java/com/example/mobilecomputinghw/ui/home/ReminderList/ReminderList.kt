@@ -257,12 +257,13 @@ private fun longToTimeString(milliseconds: Long): String {
         return "no time set"
     }
     else {
+        val milliseconds2 = milliseconds + 7200000L //adds 2 hours to have correct timezone
         return String.format(
             "%02d:%02d",
-            2 + TimeUnit.MILLISECONDS.toHours(milliseconds) -
-                    TimeUnit.MILLISECONDS.toDays(milliseconds) * 24,
-            TimeUnit.MILLISECONDS.toMinutes(milliseconds)
-                    - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliseconds))
+            TimeUnit.MILLISECONDS.toHours(milliseconds2) -
+                    TimeUnit.MILLISECONDS.toDays(milliseconds2) * 24,
+            TimeUnit.MILLISECONDS.toMinutes(milliseconds2)
+                    - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliseconds2))
         )
     }
 }
