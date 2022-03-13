@@ -38,7 +38,7 @@ fun Reminder(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val message = rememberSaveable { mutableStateOf(value = "") }
-    val iconss = rememberSaveable { mutableStateOf(value = "notifications") }
+    val iconString = rememberSaveable { mutableStateOf(value = "notifications") }
     val reminderTime = rememberSaveable { mutableStateOf(value = "no time")}
     val reminderTimeLong = rememberSaveable { mutableStateOf(0L)}
     val notificationSwitch = remember { mutableStateOf(true)}
@@ -73,7 +73,7 @@ fun Reminder(
                     time = reminderTime,
                     timeLong = reminderTimeLong)
                 Spacer(modifier = Modifier.height(20.dp))
-                IconDropdown(iconString = iconss)
+                IconDropdown(iconString = iconString)
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
                 ) {
@@ -96,7 +96,7 @@ fun Reminder(
                                     creationTime = currentTimeMillis(),
                                     creatorId = 2,
                                     reminderSeen = 14,
-                                    reminderIcon = iconss.value
+                                    reminderIcon = iconString.value
                                 )
 
                             )
