@@ -253,11 +253,16 @@ private fun StringToImageVector(IconString: String): ImageVector {
 }
 
 private fun longToTimeString(milliseconds: Long): String {
-    return String.format(
-        "%02d:%02d",
-        2 + TimeUnit.MILLISECONDS.toHours(milliseconds) -
-        TimeUnit.MILLISECONDS.toDays(milliseconds) * 24,
-        TimeUnit.MILLISECONDS.toMinutes(milliseconds)
-     - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliseconds))
-    )
+    if (milliseconds == 0L){
+        return "no time set"
+    }
+    else {
+        return String.format(
+            "%02d:%02d",
+            2 + TimeUnit.MILLISECONDS.toHours(milliseconds) -
+                    TimeUnit.MILLISECONDS.toDays(milliseconds) * 24,
+            TimeUnit.MILLISECONDS.toMinutes(milliseconds)
+                    - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliseconds))
+        )
+    }
 }

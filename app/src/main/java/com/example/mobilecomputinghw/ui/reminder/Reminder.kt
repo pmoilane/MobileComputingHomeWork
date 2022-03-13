@@ -15,16 +15,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.work.*
 import android.content.Context
+import android.location.Location
 import android.os.Build
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.mobilecomputinghw.Graph
 import com.example.mobilecomputinghw.R
 import com.example.mobilecomputinghw.util.NotificationWorker
 import com.google.accompanist.insets.systemBarsPadding
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
+import org.intellij.lang.annotations.JdkConstants
 import java.lang.System.currentTimeMillis
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -34,7 +40,9 @@ import java.util.concurrent.TimeUnit
 fun Reminder(
     onBackPress: () -> Unit,
     viewModel: ReminderViewModel = viewModel(),
-    context: Context
+    context: Context,
+    navController: NavController,
+    currentLocation: LatLng
 ) {
     val coroutineScope = rememberCoroutineScope()
     val message = rememberSaveable { mutableStateOf(value = "") }
@@ -42,6 +50,19 @@ fun Reminder(
     val reminderTime = rememberSaveable { mutableStateOf(value = "no time")}
     val reminderTimeLong = rememberSaveable { mutableStateOf(0L)}
     val notificationSwitch = remember { mutableStateOf(true)}
+    val notificationLocationBoolean = remember { mutableStateOf(true)}
+
+    val latlng = navController
+        .currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<LatLng>("location_data")
+        ?.value
+
+    val latlngReminder = if (latlng == null) {
+        LatLng(65.059, 25.466)
+    } else  {
+        latlng
+    }
 
     Surface {
         Column(
@@ -69,20 +90,49 @@ fun Reminder(
                     label = { Text(text = "Message") },
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                pickTime(context = context,
-                    time = reminderTime,
-                    timeLong = reminderTimeLong)
+                Row() {
+                    pickTime(
+                        context = context,
+                        time = reminderTime,
+                        timeLong = reminderTimeLong
+                    )
+                    Spacer(modifier = Modifier.width(47.dp))
+                }
                 Spacer(modifier = Modifier.height(20.dp))
-                IconDropdown(iconString = iconString)
+                Row(modifier = Modifier.fillMaxWidth()) {
+
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = String.format(
+                            "Lat: %1$.2f,\n Lng: %2$.2f",
+                            latlngReminder.latitude,
+                            latlngReminder.longitude)
+                    )
+                    Spacer(modifier = Modifier.width(25.dp))
+                    Button(
+                        onClick = { navController.navigate("map") },
+                        modifier = Modifier
+                            .height(55.dp)
+                            .width(105.dp),
+                        shape = MaterialTheme.shapes.large,
+                    ) {
+                        Text(text = "Reminder location")
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Switch(checked = notificationLocationBoolean.value,
+                        onCheckedChange = { notificationLocationBoolean.value = it }
+                    )
+                }
                 Spacer(modifier = Modifier.height(20.dp))
-                Row(
-                ) {
+                Row() {
                     Text(text = "Notifications:")
                     Spacer(modifier = Modifier.width(20.dp))
                     Switch(checked = notificationSwitch.value,
                     onCheckedChange = { notificationSwitch.value = it }
                     )
                 }
+                Spacer(modifier = Modifier.height(20.dp))
+                IconDropdown(iconString = iconString)
                 Spacer(modifier = Modifier.height(40.dp))
                 Button(
                     onClick = {
@@ -90,8 +140,8 @@ fun Reminder(
                             viewModel.saveReminder(
                                 com.example.mobilecomputinghw.data.entity.Reminder(
                                     message = message.value,
-                                    locationX = 2.0,
-                                    locationY = 3.0,
+                                    locationX = latlngReminder.latitude,
+                                    locationY = latlngReminder.longitude,
                                     reminderTime = reminderTimeLong.value,
                                     creationTime = currentTimeMillis(),
                                     creatorId = 2,
@@ -106,7 +156,10 @@ fun Reminder(
                             createNotificationChannel(context = Graph.appContext)
                             setOneTimeNotification(reminderTimeLong = reminderTimeLong.value,
                             notificationMessage = message.value,
-                            notificationTime = reminderTime.value)
+                            notificationTime = reminderTime.value,
+                            latlngReminder = latlngReminder,
+                            notificationLocationBoolean = notificationLocationBoolean,
+                            currentLocation = currentLocation)
                         }
                     },
                     enabled = true,
@@ -149,10 +202,11 @@ fun pickTime(
     Row(
     ) {
         Text(text = "Time: ${time.value}")//.padStart(2, '0'))
-        Spacer(modifier = Modifier.width(20.dp))
+        Spacer(modifier = Modifier.width(10.dp))
         Button(onClick = {
             timePicker.show()
-        }
+        },
+            shape = MaterialTheme.shapes.large,
         ) {
             Text(text = "Pick Time")
         }
@@ -242,7 +296,10 @@ private fun IconDropdown(
 private fun setOneTimeNotification(
     reminderTimeLong: Long,
     notificationMessage: String,
-    notificationTime: String
+    notificationTime: String,
+    latlngReminder: LatLng,
+    notificationLocationBoolean: MutableState<Boolean>,
+    currentLocation: LatLng
 ) {
     val workManager = WorkManager.getInstance(Graph.appContext)
     val constraints = Constraints.Builder()
@@ -255,15 +312,34 @@ private fun setOneTimeNotification(
         .build()
 
     workManager.enqueue(notificationWorker)
-
+    if (notificationLocationBoolean.value){
+    val distance = FloatArray(1)
     //Monitoring for state of work
     workManager.getWorkInfoByIdLiveData(notificationWorker.id)
         .observeForever { workInfo ->
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                createSuccessNotification(notificationMessage = notificationMessage,
-                notificationTime = notificationTime)
+                Location.distanceBetween(currentLocation.latitude,currentLocation.longitude,
+                    latlngReminder.latitude, latlngReminder.longitude, distance)
+                if (distance[0] <= 50) {
+                    createSuccessNotification(
+                        notificationMessage = notificationMessage,
+                        notificationTime = notificationTime
+                    )
+                }
             }
         }
+    }else{
+        workManager.getWorkInfoByIdLiveData(notificationWorker.id)
+            .observeForever { workInfo ->
+                if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                    createSuccessNotification(
+                        notificationMessage = notificationMessage,
+                        notificationTime = notificationTime
+                    )
+                }
+            }
+    }
+
 }
 
 private fun createNotificationChannel(context: Context) {
@@ -291,7 +367,7 @@ private fun createSuccessNotification(
     val builder = NotificationCompat.Builder(Graph.appContext, "CHANNEL_ID")
         .setSmallIcon(R.drawable.ic_launcher_background)
         .setContentTitle("Reminder $notificationTime")
-        .setContentText("$notificationMessage")
+        .setContentText(notificationMessage)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
     with(NotificationManagerCompat.from(Graph.appContext)) {
